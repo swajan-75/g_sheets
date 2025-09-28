@@ -1,7 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { STATUS_CODES } from 'http';
 import { parseBkashMessage } from 'src/services/parser.service';
-import { GoogleSheetsService } from 'src/services/google-sheets.service';
 import { BalanceService } from 'src/services/balance.service';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,7 +14,7 @@ export class SmsController {
     constructor(
             @InjectRepository(TransactionsEntity)
             private readonly TransactionsRepo: Repository<TransactionsEntity>,
-            private readonly sheetsService: GoogleSheetsService,
+         
             @InjectRepository(UserEntity)
             private readonly userRepo: Repository<UserEntity>,
             private readonly balanceService: BalanceService,

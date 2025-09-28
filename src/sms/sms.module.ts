@@ -4,7 +4,7 @@ import { SmsController } from './sms.controller';
 import { SmsService } from './sms.service';
 import { MainBalanceEntity } from 'src/user/entity/mainbalance.entity';
 import { TransactionsEntity } from 'src/user/entity/transactions.entity';
-import { GoogleSheetsService } from 'src/services/google-sheets.service';
+
 import { BalanceService } from 'src/services/balance.service';
 import { UserEntity } from 'src/user/entity/user.entity';
 
@@ -17,7 +17,7 @@ import { UserEntity } from 'src/user/entity/user.entity';
     ]),
   ],
   controllers: [SmsController],
-  providers: [SmsService, GoogleSheetsService, BalanceService],
+  providers: [SmsService, BalanceService],
   exports: [SmsService], 
 })
 export class SmsModule {}
