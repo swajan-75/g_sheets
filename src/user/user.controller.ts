@@ -28,20 +28,20 @@ export class user_controller {
 
   @Post('register')
   async registerUser(@Body() body: user_dto) {
-    const exists = await this.userRepo.findOne({
-      where: [
-        { email: body.email },
-        { username: body.username },
-        { phone_number: body.phone_number },
-      ],
-    });
+    const existingEmail = await this.userRepo.findOne({ where: { email: body.email } });
+  if (existingEmail) {
+    return { status: 400, message: 'Email already exists.' };
+  }
 
-    if (exists) {
-      return {
-        status: 400,
-        message: 'User with given email, username or phone number already exists.',
-      }
-    }
+  const existingUsername = await this.userRepo.findOne({ where: { username: body.username } });
+  if (existingUsername) {
+    return { status: 400, message: 'Username already exists.' };
+  }
+
+  const existingPhone = await this.userRepo.findOne({ where: { phone_number: body.phone_number } });
+  if (existingPhone) {
+    return { status: 400, message: 'Phone number already exists.' };
+  }
 
     const user = this.userRepo.create(body);
     const savedUser = await this.userRepo.save(user);
