@@ -37,9 +37,10 @@ export class user_controller {
     });
 
     if (exists) {
-      throw new BadRequestException(
-        'User with same email, username, or phone already exists.',
-      );
+      return {
+        status: 400,
+        message: 'User with given email, username or phone number already exists.',
+      }
     }
 
     const user = this.userRepo.create(body);
