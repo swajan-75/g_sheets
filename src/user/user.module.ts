@@ -4,6 +4,7 @@ import { UserEntity } from "./entity/user.entity";
 import { MainBalanceEntity } from "./entity/mainbalance.entity";
 import { TransactionsEntity } from "./entity/transactions.entity";
 import { user_controller } from "./user.controller";
+import { AuthModule } from "src/auth/auth.module";
 
 @Module({
     imports : [
@@ -11,7 +12,8 @@ import { user_controller } from "./user.controller";
             UserEntity,
             MainBalanceEntity,
             TransactionsEntity
-        ])
+        ]),
+        AuthModule
     ],
     controllers : [user_controller],
     providers : [],

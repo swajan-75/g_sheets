@@ -6,6 +6,7 @@ import {
   UnauthorizedException,
   Get,
   Param,
+  UseGuards,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Transaction } from 'typeorm';
@@ -13,10 +14,14 @@ import { UserEntity } from './entity/user.entity';
 import { MainBalanceEntity } from './entity/mainbalance.entity';
 import { user_dto } from '../dto/user.dto';
 import { TransactionsEntity } from './entity/transactions.entity';
+import { AuthService } from 'src/auth/auth.service';
+
 
 @Controller('user')
 export class user_controller {
   constructor(
+    private readonly authService: AuthService,
+
     @InjectRepository(UserEntity)
     private readonly userRepo: Repository<UserEntity>,
 
@@ -74,12 +79,20 @@ export class user_controller {
     if (user.password !== body.password) {
       throw new UnauthorizedException('Invalid email or password.');
     }
+    const payload = {
+        sub : user.user_id,
+        email : user.email
+    }
+    const token = await this.authService.generate_jwt(payload)
+
 
     return {
     status : 200,
     message: 'Login successful! brooo',
+    token : token,
     };
   }
+
   @Post('transaction')
   async makeTansaction(
     @Body()
