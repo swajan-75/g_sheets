@@ -90,8 +90,8 @@ export class user_controller {
     const token = await this.authService.generate_jwt(payload)
     res.cookie('token', token,{
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // set to true in production
-        sameSite: 'strict', 
+        secure: true,  // set to true in production
+        sameSite: 'none', 
         maxAge: 3600000, 
     });
 
