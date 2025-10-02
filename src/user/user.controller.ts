@@ -7,6 +7,7 @@ import {
   Get,
   Param,
   UseGuards,
+  Res,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Transaction } from 'typeorm';
@@ -15,6 +16,7 @@ import { MainBalanceEntity } from './entity/mainbalance.entity';
 import { user_dto } from '../dto/user.dto';
 import { TransactionsEntity } from './entity/transactions.entity';
 import { AuthService } from 'src/auth/auth.service';
+import { Response } from 'express';
 
 
 @Controller('user')
@@ -67,7 +69,9 @@ export class user_controller {
   }
 
   @Post('login')
-  async loginUser(@Body() body: { email: string; password: string }) {
+  async loginUser(@Body() body: { email: string; password: string },
+  @Res() res: Response
+) {
     const user = await this.userRepo.findOne({
       where: { email: body.email },
     });
@@ -84,13 +88,19 @@ export class user_controller {
         email : user.email
     }
     const token = await this.authService.generate_jwt(payload)
+    res.cookie('token', token,{
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // set to true in production
+        sameSite: 'strict', 
+        maxAge: 3600000, 
+    });
 
-
-    return {
-    status : 200,
-    message: 'Login successful! brooo',
-    token : token,
-    };
+    return res.json({
+        status : 200,
+        message : 'Login successful',
+    })
+    
+    
   }
 
   @Post('transaction')
