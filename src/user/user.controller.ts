@@ -8,6 +8,7 @@ import {
   Param,
   UseGuards,
   Res,
+  Req,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Transaction } from 'typeorm';
@@ -17,6 +18,7 @@ import { user_dto } from '../dto/user.dto';
 import { TransactionsEntity } from './entity/transactions.entity';
 import { AuthService } from 'src/auth/auth.service';
 import { Response } from 'express';
+import { Request } from 'express';
 
 
 @Controller('user')
@@ -67,6 +69,25 @@ export class user_controller {
       user_id: savedUser.user_id,
     };
   }
+
+  @Get('token-test')
+  async checkToken(@Req() req : Request){
+    const token = req.cookies['token'];
+    if(!token) {
+        throw new UnauthorizedException('No token provided');
+    }
+    try{
+        const decoded = await this.authService.valid_jwt(token);
+        return {
+            status : 200,
+            message : 'Token is valid',
+        }
+    }catch (err) {
+      console.error('Token verification failed:', err);
+      throw new UnauthorizedException('Invalid or expired token');
+    }
+  }
+
 
   @Post('login')
   async loginUser(@Body() body: { email: string; password: string },
