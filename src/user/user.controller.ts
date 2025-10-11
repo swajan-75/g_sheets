@@ -70,6 +70,20 @@ export class user_controller {
     };
   }
 
+  @Post('logout')
+  async logoutUser(@Res({passthrough : true}) res: Response) {
+    res.clearCookie('token', {
+        httpOnly: true,
+        secure: true,  // set to true in production
+        sameSite: 'none', 
+        path: '/',
+    });
+    return res.json({
+        status : 200,
+        message : 'Logout successful',
+    })
+  }
+
   @Get('token-test')
   async checkToken(@Req() req : Request){
     const token = req.cookies['token'];
@@ -77,7 +91,7 @@ export class user_controller {
         throw new UnauthorizedException('No token provided');
     }
     try{
-        const decoded = await this.authService.valid_jwt(token);
+       // const decoded = await this.authService.valid_jwt(token);
         return {
             status : 200,
             message : 'Token is valid',
